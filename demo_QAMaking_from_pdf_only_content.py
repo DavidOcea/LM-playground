@@ -62,8 +62,8 @@ def encode_image_to_base64(image_path):
 image_base64 = encode_image_to_base64("icon/ATOM.png")
 
 
-with open("/workspace/mnt/storage/xiangxin@supremind.com/infer_tensor_ceph/LM-playground_trt/template/QAtemplat.txt", 'r') as f:
-    template = ''.join(f.readlines())
+# with open("/workspace/mnt/storage/xiangxin@supremind.com/infer_tensor_ceph/LM-playground_trt/template/QAtemplat.txt", 'r') as f:
+#     template = ''.join(f.readlines())
 
 
 
@@ -73,10 +73,11 @@ def _launch_demo(model, sentence_model, template):
     pdftxt = []
 
     def formatcontent(query: str) -> str:
-        p = template + query
+        p = template + '\n' + query
         return p
 
     def crawling_(content):
+        # import pdb; pdb.set_trace()
         p = formatcontent(content)
 
         message = {"role": "user", "content": p}
@@ -273,19 +274,19 @@ if __name__ == '__main__':
     parser.add_argument('--sentences_model_path', type=str, default="/workspace/mnt/storage/xiangxin@supremind.com/infer_tensor/qwen1.5-7B-chat/sentences_model")
     parser.add_argument('--tokenizer_dir', type=str, default="/workspace/mnt/storage/xiangxin@supremind.com/infer_tensor/qwen1.5-7B-chat")
     parser.add_argument('--prompt_path', type=str, default="/workspace/mnt/storage/xiangxin@supremind.com/infer_tensor/Qwen2-VL/smmc/LM-playground/template/QAtemplat.txt")
-    parser.add_argument('--trt_llm', type=bool, default=True, help="whether use trt_llm" )
+    parser.add_argument('--trt_llm', type=bool, default=False, help="whether use trt_llm" )
 
     args = parser.parse_args()
-
+    # import pdb; pdb.set_trace()
     #qwen trt
     args_chatmodel = {
         "model_name_or_path":args.model_name_or_path,
         "infer_backend":"trt-llm" if args.trt_llm else "huggingface",
         "tokenizer_dir":args.tokenizer_dir,
         "max_length":50,  
-        "template": "default",  
+        "template": "alpaca",  
         "trt_streaming": False,
-        "temperature": 1,
+        "temperature": 0.5,
         "top_p": 0.7,
         "top_k": 1,
         #"prompt_path": "/workspace/mnt/storage/xiangxin@supremind.com/infer_tensor_ceph/LM-playground_trt/template/QAtemplat.txt"
